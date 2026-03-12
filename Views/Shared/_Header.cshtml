@@ -30,6 +30,9 @@
                     <li><a asp-controller="PostJobs" asp-action="Create">Post Service</a></li>
                     <li><a asp-controller="Bookings" asp-action="Orders">Orders</a></li>
                     <li><a asp-controller="Bookings" asp-action="AcceptedBookings">Accepted</a></li>
+                    <li><a asp-controller="Bookings" asp-action="CompletedBookings">Completed Orders</a></li>
+                    <li><a asp-controller="Provider" asp-action="Dashboard">Dashboard</a></li>
+
                 }
 
                 @if (isCustomer)
@@ -40,13 +43,10 @@
                 @if (isAdmin)
                 {
                     <li><a asp-controller="Chat" asp-action="AdminDashboard">Chat Monitor</a></li>
-                    <li><a asp-controller="Dashboard" asp-action="Index">Admin Panel</a></li>
+                    <li><a asp-controller="Provider" asp-action="Dashboard">Admin Panel</a></li>
                 }
 
-                @if (isLoggedIn && !isAdmin)
-                {
-                    <li><a asp-controller="Dashboard" asp-action="Index">Dashboard</a></li>
-                }
+              
             </ul>
         </nav>
 
@@ -88,9 +88,12 @@
                             <span class="dropdown-name">@userName</span>
                             <span class="dropdown-type @userType">@userType</span>
                         </div>
-                        <a asp-controller="Dashboard" asp-action="Index" class="dropdown-item">
-                            <i class="fas fa-tachometer-alt"></i> Dashboard
-                        </a>
+                        @if (isProvider)
+                        {
+                            <a asp-controller="Provider" asp-action="Dashboard" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                        }
                         @if (isAdmin)
                         {
                             <a asp-controller="Chat" asp-action="AdminDashboard" class="dropdown-item">
@@ -134,6 +137,9 @@
                 <li><a asp-controller="PostJobs" asp-action="Create">Post a Service</a></li>
                 <li><a asp-controller="Bookings" asp-action="Orders">Orders</a></li>
                 <li><a asp-controller="Bookings" asp-action="AcceptedBookings">Accepted Orders</a></li>
+                <li><a asp-controller="Bookings" asp-action="CompletedBookings">Completed Orders</a></li>
+                <li><a asp-controller="Provider" asp-action="Dashboard">Dashboard</a></li>
+
             }
 
             @if (isCustomer)
@@ -144,7 +150,6 @@
             @if (isLoggedIn)
             {
                 <li><a asp-controller="Chat" asp-action="Index">💬 Chats</a></li>
-                <li><a asp-controller="Dashboard" asp-action="Index">Dashboard</a></li>
                 @if (isAdmin)
                 {
                     <li><a asp-controller="Chat" asp-action="AdminDashboard">Chat Monitor</a></li>
@@ -288,230 +293,3 @@
         }
     });
 </script>
-@* @{
-    ViewData["Title"] = "_Header";
-
-    // Get session values
-    string userId = Context.Session.GetString("UserId");
-    string userName = Context.Session.GetString("UserName");
-    string userType = Context.Session.GetString("UserType");
-    bool isLoggedIn = !string.IsNullOrEmpty(userId);
-    bool isProvider = userType == "provider";
-    bool isCustomer = userType == "customer";
-
-}
-
-<header class="main-header">
-    <div class="header-content">
-        <!-- Logo -->
-        <div class="logo">
-            <a asp-controller="Home" asp-action="Index">
-                <i class="fas fa-hands-helping"></i>
-                <span>WorkConnect</span>
-            </a>
-        </div>
-
-        <!-- Navigation Menu -->
-        <nav class="main-nav">
-            <ul>
-                <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-                <li><a asp-controller="Services" asp-action="Index">Find Services</a></li>
-
-                <!-- 🔴 Only show Post a Service to providers -->
-                @if (isProvider)
-                {
-                    <li><a asp-controller="PostJobs" asp-action="Create">Post a Service</a></li>
-                    <li><a asp-controller="Bookings" asp-action="Orders">Orders</a></li>
-                    <li><a asp-controller="Bookings" asp-action="Acceptedbookings">Accepted Orders</a></li>
-
-                }
-
-                @if (isCustomer)
-                {
-                    <li><a asp-controller="Bookings" asp-action="Mybookings">My Bookings</a></li>
-
-                }
-
-                <li><a href="#how-it-works">How It Works</a></li>
-                <li><a href="#testimonials">Testimonials</a></li>
-
-                <!-- 🔴 Show dashboard for logged in users -->
-                @if (isLoggedIn)
-                {
-                    <li><a asp-controller="Dashboard" asp-action="Index">Dashboard</a></li>
-                }
-            </ul>
-        </nav>
-
-        <!-- User Actions -->
-        <div class="header-actions">
-            @if (isLoggedIn)
-            {
-                <!-- 🔴 User is logged in -->
-                <span class="welcome-message">
-                    <i class="fas fa-user-circle"></i> @userName
-                    @if (isProvider)
-                    {
-                        <span class="provider-badge">(Provider)</span>
-                    }
-                    else
-                    {
-                        <span class="customer-badge">(Customer)</span>
-                    }
-                </span>
-
-                <!-- Logout Form -->
-                <form asp-controller="Account" asp-action="Logout" method="post" style="display: inline;">
-                    @Html.AntiForgeryToken()
-                    <button type="submit" class="btn btn-small btn-logout">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </button>
-                </form>
-            }
-            else
-            {
-                <!-- 🔴 User is not logged in -->
-                <a asp-controller="Account" asp-action="Login" class="btn btn-small">
-                    <i class="fas fa-sign-in-alt"></i> Log In
-                </a>
-                <a asp-controller="Account" asp-action="Register" class="btn btn-small btn-primary">
-                    <i class="fas fa-user-plus"></i> Sign Up
-                </a>
-            }
-        </div>
-
-        <!-- Mobile Menu Toggle -->
-        <button class="mobile-menu-toggle" id="mobileMenuToggle">
-            <i class="fas fa-bars"></i>
-        </button>
-    </div>
-
-    <!-- Mobile Menu -->
-    <div class="mobile-menu" id="mobileMenu">
-        <ul>
-            <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-            <li><a asp-controller="Services" asp-action="Index">Find Services</a></li>
-
-            <!-- 🔴 Mobile menu - only show Post a Service to providers -->
-            @if (isProvider)
-            {
-                <li><a asp-controller="PostJobs" asp-action="Create">Post a Service</a></li>
-            }
-
-            <li><a href="#how-it-works">How It Works</a></li>
-            <li><a href="#testimonials">Testimonials</a></li>
-
-            @if (isLoggedIn)
-            {
-                <li><a asp-controller="Dashboard" asp-action="Index">Dashboard</a></li>
-                <li class="mobile-user-info">
-                    <hr />
-                    <span><i class="fas fa-user-circle"></i> @userName</span>
-                    <form asp-controller="Account" asp-action="Logout" method="post">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="btn btn-small btn-logout mobile-logout">
-                            <i class="fas fa-sign-out-alt"></i> Logout
-                        </button>
-                    </form>
-                </li>
-            }
-            else
-            {
-                <li><a asp-controller="Account" asp-action="Login">Log In</a></li>
-                <li><a asp-controller="Account" asp-action="Register">Sign Up</a></li>
-            }
-        </ul>
-    </div>
-</header>
-
-<style>
-    /* Header action buttons */
-    .btn-logout {
-        background: #dc3545;
-        color: white;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 0.9rem;
-        transition: background 0.3s;
-    }
-
-        .btn-logout:hover {
-            background: #c82333;
-        }
-
-    .welcome-message {
-        margin-right: 15px;
-        color: #333;
-        font-weight: 500;
-    }
-
-        .welcome-message i {
-            color: #4a6cf7;
-            margin-right: 5px;
-        }
-
-    .provider-badge {
-        background: #28a745;
-        color: white;
-        padding: 2px 8px;
-        border-radius: 12px;
-        font-size: 0.7rem;
-        margin-left: 5px;
-    }
-
-    .customer-badge {
-        background: #ffc107;
-        color: #333;
-        padding: 2px 8px;
-        border-radius: 12px;
-        font-size: 0.7rem;
-        margin-left: 5px;
-    }
-
-    .mobile-user-info {
-        padding: 10px 0;
-        background: #f8f9fa;
-        margin-top: 10px;
-    }
-
-        .mobile-user-info span {
-            display: block;
-            padding: 10px;
-            color: #333;
-        }
-
-    .mobile-logout {
-        width: 90%;
-        margin: 0 auto 10px;
-        display: block;
-    }
-
-    hr {
-        margin: 10px 0;
-        border: none;
-        border-top: 1px solid #dee2e6;
-    }
-</style>
-
-<script>
-    // Mobile menu toggle
-    document.addEventListener('DOMContentLoaded', function () {
-        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-        const mobileMenu = document.getElementById('mobileMenu');
-
-        if (mobileMenuToggle && mobileMenu) {
-            mobileMenuToggle.addEventListener('click', function () {
-                mobileMenu.classList.toggle('active');
-            });
-
-            // Close menu when clicking outside
-            document.addEventListener('click', function (event) {
-                if (!mobileMenu.contains(event.target) && !mobileMenuToggle.contains(event.target)) {
-                    mobileMenu.classList.remove('active');
-                }
-            });
-        }
-    });
-</script> *@

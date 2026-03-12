@@ -1,0 +1,271 @@
+﻿@model List<phpMVC.Models.Booking>
+@{
+    ViewData["Title"] = "Rate Your Services | WorkConnect";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/rating.css" />
+}
+
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <h1><i class="fas fa-star"></i> Rate Your Services</h1>
+        <p>Help others by sharing your experience</p>
+    </div>
+</section>
+
+<!-- Rating Section -->
+<section class="rating-section">
+    <div class="container">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle"></i>
+                @TempData["SuccessMessage"]
+            </div>
+        }
+
+        @if (Model.Any())
+        {
+            <div class="rating-notification-banner">
+                <i class="fas fa-star"></i>
+                <div>
+                    <strong>You have @Model.Count service@(Model.Count > 1 ? "s" : "") to rate!</strong>
+                    <p>Your feedback helps providers improve and helps other customers make better decisions.</p>
+                </div>
+            </div>
+
+            <div class="ratings-grid">
+                @foreach (var booking in Model)
+                {
+                    <div class="rating-card" data-booking-id="@booking.Id">
+                        <div class="rating-card-header">
+                            <div class="service-info">
+                                @if (!string.IsNullOrEmpty(booking.ServiceImage))
+                                {
+                                    <img src="@booking.ServiceImage" alt="@booking.ServiceName" class="service-thumb" />
+                                }
+                                <div>
+                                    <h3>@booking.ServiceName</h3>
+                                    <p class="provider-name">
+                                        <i class="fas fa-user-tie"></i> @booking.ProviderName
+                                    </p>
+                                    <p class="service-date">
+                                        <i class="fas fa-calendar-check"></i>
+                                        Completed: @(booking.UpdatedAt?.ToString("MMM dd, yyyy") ?? booking.BookingDate.ToString("MMM dd, yyyy"))
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="service-price">
+                                <i class="fas fa-dollar-sign"></i>
+                                $@(booking.AgreedPrice?.ToString("0.00") ?? booking.ProposedPrice.ToString("0.00"))
+                            </div>
+                        </div>
+
+                        <div class="rating-card-body">
+                            <form class="rating-form" onsubmit="submitRating(event, @booking.Id)">
+                                @Html.AntiForgeryToken()
+
+                                <!-- Star Rating -->
+                                <div class="rating-input-group">
+                                    <label>How would you rate this service?</label>
+                                    <div class="star-rating" data-booking="@booking.Id">
+                                        <input type="radio" name="rating-@booking.Id" id="star5-@booking.Id" value="5" required />
+                                        <label for="star5-@booking.Id" title="5 stars"><i class="fas fa-star"></i></label>
+
+                                        <input type="radio" name="rating-@booking.Id" id="star4-@booking.Id" value="4" />
+                                        <label for="star4-@booking.Id" title="4 stars"><i class="fas fa-star"></i></label>
+
+                                        <input type="radio" name="rating-@booking.Id" id="star3-@booking.Id" value="3" />
+                                        <label for="star3-@booking.Id" title="3 stars"><i class="fas fa-star"></i></label>
+
+                                        <input type="radio" name="rating-@booking.Id" id="star2-@booking.Id" value="2" />
+                                        <label for="star2-@booking.Id" title="2 stars"><i class="fas fa-star"></i></label>
+
+                                        <input type="radio" name="rating-@booking.Id" id="star1-@booking.Id" value="1" />
+                                        <label for="star1-@booking.Id" title="1 star"><i class="fas fa-star"></i></label>
+                                    </div>
+                                    <div class="rating-text" id="rating-text-@booking.Id"></div>
+                                </div>
+
+                                <!-- Review Text -->
+                                <div class="review-input-group">
+                                    <label for="review-@booking.Id">Share your experience (optional)</label>
+                                    <textarea id="review-@booking.Id"
+                                              name="reviewText"
+                                              rows="4"
+                                              placeholder="Tell us about your experience with this service..."
+                                              maxlength="500"></textarea>
+                                    <small class="char-counter">
+                                        <span id="char-count-@booking.Id">0</span> / 500 characters
+                                    </small>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <button type="submit" class="btn-submit-rating">
+                                    <i class="fas fa-paper-plane"></i> Submit Rating
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="fas fa-check-circle"></i>
+                <h3>All Caught Up!</h3>
+                <p>You don't have any services to rate at the moment.</p>
+                <a asp-controller="Bookings" asp-action="MyBookings" class="btn btn-primary">
+                    <i class="fas fa-list"></i> View My Bookings
+                </a>
+            </div>
+        }
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // Star rating interaction
+        document.querySelectorAll('.star-rating').forEach(container => {
+            const inputs = container.querySelectorAll('input');
+            const labels = container.querySelectorAll('label');
+            const bookingId = container.dataset.booking;
+            const ratingText = document.getElementById('rating-text-' + bookingId);
+
+            const ratingDescriptions = {
+                '5': '⭐ Excellent!',
+                '4': '⭐ Very Good',
+                '3': '⭐ Good',
+                '2': '⭐ Fair',
+                '1': '⭐ Poor'
+            };
+
+            inputs.forEach((input, index) => {
+                input.addEventListener('change', function () {
+                    ratingText.textContent = ratingDescriptions[this.value];
+                    ratingText.className = 'rating-text rating-selected';
+                });
+            });
+
+            // Hover effects
+            labels.forEach((label, index) => {
+                label.addEventListener('mouseenter', function () {
+                    const value = 5 - index;
+                    ratingText.textContent = ratingDescriptions[value];
+                    ratingText.className = 'rating-text rating-hover';
+                });
+            });
+
+            container.addEventListener('mouseleave', function () {
+                const selected = container.querySelector('input:checked');
+                if (selected) {
+                    ratingText.textContent = ratingDescriptions[selected.value];
+                    ratingText.className = 'rating-text rating-selected';
+                } else {
+                    ratingText.textContent = '';
+                    ratingText.className = 'rating-text';
+                }
+            });
+        });
+
+        // Character counter
+        document.querySelectorAll('textarea[name="reviewText"]').forEach(textarea => {
+            const bookingId = textarea.id.replace('review-', '');
+            const counter = document.getElementById('char-count-' + bookingId);
+
+            textarea.addEventListener('input', function () {
+                counter.textContent = this.value.length;
+            });
+        });
+
+        // Submit rating
+        function submitRating(event, bookingId) {
+            event.preventDefault();
+
+            const form = event.target;
+            const card = document.querySelector(`[data-booking-id="${bookingId}"]`);
+            const submitBtn = form.querySelector('.btn-submit-rating');
+
+            const ratingInput = form.querySelector('input[name="rating-' + bookingId + '"]:checked');
+
+            if (!ratingInput) {
+                alert('Please select a rating');
+                return;
+            }
+
+            const rating = ratingInput.value;
+            const reviewText = form.querySelector('textarea[name="reviewText"]').value;
+
+            // Disable button
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+            const formData = new FormData();
+            formData.append('bookingId', bookingId);
+            formData.append('rating', rating);
+            formData.append('reviewText', reviewText);
+            formData.append('__RequestVerificationToken', form.querySelector('input[name="__RequestVerificationToken"]').value);
+
+            fetch('/Bookings/SubmitRating', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Animate card removal
+                        card.style.transition = 'all 0.5s ease';
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateX(100%)';
+
+                        setTimeout(() => {
+                            card.remove();
+
+                            // Check if any cards remain
+                            const remainingCards = document.querySelectorAll('.rating-card').length;
+                            if (remainingCards === 0) {
+                                location.reload();
+                            } else {
+                                // Show success message
+                                showSuccessMessage('Rating submitted successfully! Thank you for your feedback.');
+
+                                // Update banner count
+                                const banner = document.querySelector('.rating-notification-banner strong');
+                                if (banner) {
+                                    banner.textContent = `You have ${remainingCards} service${remainingCards > 1 ? 's' : ''} to rate!`;
+                                }
+                            }
+                        }, 500);
+                    } else {
+                        alert('Error: ' + data.message);
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Rating';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error submitting rating. Please try again.');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Rating';
+                });
+        }
+
+        function showSuccessMessage(message) {
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-success';
+            alert.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+
+            const container = document.querySelector('.rating-section .container');
+            container.insertBefore(alert, container.firstChild);
+
+            setTimeout(() => {
+                alert.style.transition = 'opacity 0.5s ease';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            }, 5000);
+        }
+    </script>
+}

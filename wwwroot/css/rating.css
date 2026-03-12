@@ -1,0 +1,365 @@
+﻿/* ============================================
+   CUSTOMER RATING PAGE STYLES
+   ============================================ */
+
+.rating-section {
+    padding: 40px 0 80px;
+    background: #f9f9f9;
+    min-height: 100vh;
+}
+
+/* Notification Banner */
+.rating-notification-banner {
+    background: linear-gradient(135deg, #ff6b35 0%, #ff523b 100%);
+    color: white;
+    padding: 20px 25px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 4px 15px rgba(255, 82, 59, 0.3);
+}
+
+    .rating-notification-banner i {
+        font-size: 2.5rem;
+        opacity: 0.9;
+    }
+
+    .rating-notification-banner strong {
+        display: block;
+        font-size: 1.3rem;
+        margin-bottom: 5px;
+    }
+
+    .rating-notification-banner p {
+        margin: 0;
+        opacity: 0.95;
+        font-size: 1rem;
+    }
+
+/* Ratings Grid */
+.ratings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+    gap: 25px;
+}
+
+/* Rating Card */
+.rating-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+    .rating-card:hover {
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
+
+.rating-card-header {
+    background: #f8f9fa;
+    padding: 20px;
+    border-bottom: 2px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.service-info {
+    display: flex;
+    gap: 15px;
+    flex: 1;
+}
+
+.service-thumb {
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.service-info h3 {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.provider-name {
+    color: #666;
+    font-size: 0.95rem;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+    .provider-name i {
+        color: #ff523b;
+    }
+
+.service-date {
+    color: #999;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+    .service-date i {
+        color: #28a745;
+    }
+
+.service-price {
+    background: #ff523b;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Rating Card Body */
+.rating-card-body {
+    padding: 25px;
+}
+
+.rating-form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* Star Rating Input */
+.rating-input-group {
+    text-align: center;
+}
+
+    .rating-input-group label {
+        display: block;
+        margin-bottom: 15px;
+        font-weight: 600;
+        color: #333;
+        font-size: 1.1rem;
+    }
+
+.star-rating {
+    display: inline-flex;
+    flex-direction: row-reverse;
+    gap: 8px;
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+}
+
+    .star-rating input {
+        display: none;
+    }
+
+    .star-rating label {
+        cursor: pointer;
+        color: #ddd;
+        transition: all 0.2s ease;
+    }
+
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: #ffc107;
+            transform: scale(1.1);
+        }
+
+    .star-rating input:checked ~ label {
+        color: #ffc107;
+    }
+
+.rating-text {
+    min-height: 30px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+    .rating-text.rating-selected {
+        color: #ff523b;
+    }
+
+    .rating-text.rating-hover {
+        color: #999;
+    }
+
+/* Review Text Input */
+.review-input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+    .review-input-group label {
+        margin-bottom: 10px;
+        font-weight: 500;
+        color: #333;
+    }
+
+    .review-input-group textarea {
+        padding: 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-family: 'Poppins', sans-serif;
+        resize: vertical;
+        transition: all 0.3s ease;
+    }
+
+        .review-input-group textarea:focus {
+            outline: none;
+            border-color: #ff523b;
+            box-shadow: 0 0 0 3px rgba(255, 82, 59, 0.1);
+        }
+
+.char-counter {
+    margin-top: 8px;
+    text-align: right;
+    color: #999;
+    font-size: 0.9rem;
+}
+
+/* Submit Button */
+.btn-submit-rating {
+    background: linear-gradient(135deg, #ff6b35 0%, #ff523b 100%);
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 4px 12px rgba(255, 82, 59, 0.3);
+}
+
+    .btn-submit-rating:hover {
+        background: linear-gradient(135deg, #ff523b 0%, #f44336 100%);
+        box-shadow: 0 6px 16px rgba(255, 82, 59, 0.4);
+        transform: translateY(-2px);
+    }
+
+    .btn-submit-rating:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+/* Empty State */
+.empty-state {
+    background: white;
+    padding: 60px 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+    .empty-state i {
+        font-size: 4rem;
+        color: #28a745;
+        margin-bottom: 20px;
+    }
+
+    .empty-state h3 {
+        font-size: 1.8rem;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .empty-state p {
+        color: #666;
+        margin-bottom: 25px;
+        font-size: 1.1rem;
+    }
+
+/* Alerts */
+.alert {
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: slideIn 0.4s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert i {
+    font-size: 1.3rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .ratings-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .rating-card-header {
+        flex-direction: column;
+    }
+
+    .service-info {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .service-thumb {
+        margin: 0 auto;
+    }
+
+    .service-price {
+        align-self: center;
+    }
+
+    .star-rating {
+        font-size: 2rem;
+    }
+
+    .rating-notification-banner {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .star-rating {
+        font-size: 1.8rem;
+        gap: 5px;
+    }
+
+    .rating-card-body {
+        padding: 20px 15px;
+    }
+}
+body {
+}

@@ -1,0 +1,296 @@
+﻿@model phpMVC.Models.ProviderDashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard | WorkConnect";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+}
+
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <h1><i class="fas fa-chart-line"></i> Provider Dashboard</h1>
+        <p>Your business overview and performance metrics</p>
+    </div>
+</section>
+
+<!-- Dashboard Section -->
+<section class="dashboard-section">
+    <div class="container">
+        <!-- Welcome Message -->
+        <div class="welcome-card">
+            <div class="welcome-content">
+                <h2>Welcome back, @ViewBag.ProviderName! 👋</h2>
+                <p>Here's what's happening with your services today</p>
+            </div>
+            <div class="quick-stats">
+                <span class="quick-stat-item">
+                    <i class="fas fa-star"></i>
+                    <strong>@Model.AverageRating.ToString("0.0")</strong> Rating
+                </span>
+                <span class="quick-stat-item">
+                    <i class="fas fa-check-double"></i>
+                    <strong>@Model.TotalCompleted</strong> Jobs Done
+                </span>
+            </div>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="stats-grid">
+            <!-- Pending Orders -->
+            <div class="stat-card stat-pending">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>@Model.PendingOrders</h3>
+                    <p>Pending Orders</p>
+                    <a asp-controller="Bookings" asp-action="Orders" class="stat-link">
+                        View All <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Accepted Jobs -->
+            <div class="stat-card stat-accepted">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>@Model.AcceptedJobs</h3>
+                    <p>Accepted Jobs</p>
+                    <a asp-controller="Bookings" asp-action="AcceptedBookings" class="stat-link">
+                        View All <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Completed Jobs -->
+            <div class="stat-card stat-completed">
+                <div class="stat-icon">
+                    <i class="fas fa-check-double"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>@Model.CompletedJobs</h3>
+                    <p>Completed Jobs</p>
+                    <a asp-controller="Bookings" asp-action="CompletedBookings" class="stat-link">
+                        View All <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Total Earnings -->
+            <div class="stat-card stat-earnings">
+                <div class="stat-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>$@Model.TotalEarnings.ToString("0.00")</h3>
+                    <p>Total Earnings</p>
+                    <span class="stat-subtext">From completed jobs</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts & Detailed Stats -->
+        <div class="dashboard-grid">
+            <!-- Recent Activity -->
+            <div class="dashboard-card activity-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-history"></i> Recent Activity</h3>
+                </div>
+                <div class="card-body">
+                    @if (Model.RecentBookings != null && Model.RecentBookings.Any())
+                    {
+                        <div class="activity-list">
+                            @foreach (var booking in Model.RecentBookings.Take(5))
+                            {
+                                <div class="activity-item">
+                                    <div class="activity-icon status-@booking.Status.ToLower()">
+                                        @if (booking.Status == "pending")
+                                        {
+                                            <i class="fas fa-clock"></i>
+                                        }
+                                        else if (booking.Status == "accepted")
+                                        {
+                                            <i class="fas fa-check"></i>
+                                        }
+                                        else if (booking.Status == "completed")
+                                        {
+                                            <i class="fas fa-check-double"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fas fa-times"></i>
+                                        }
+                                    </div>
+                                    <div class="activity-details">
+                                        <strong>@booking.ServiceName</strong>
+                                        <p>@booking.CustomerName - @booking.Status.ToUpper()</p>
+                                        <small>@booking.CreatedAt.ToString("MMM dd, yyyy")</small>
+                                    </div>
+                                    <div class="activity-price">
+                                        $@((booking.AgreedPrice ?? booking.ProposedPrice).ToString("0.00"))
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="empty-activity">
+                            <i class="fas fa-inbox"></i>
+                            <p>No recent activity</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Performance Chart -->
+            <div class="dashboard-card chart-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-chart-bar"></i> Booking Trends</h3>
+                </div>
+                <div class="card-body">
+                    <canvas id="bookingsChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Rating Breakdown -->
+            <div class="dashboard-card rating-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-star"></i> Rating Overview</h3>
+                </div>
+                <div class="card-body">
+                    <div class="rating-summary">
+                        <div class="rating-score">
+                            <h2>@Model.AverageRating.ToString("0.0")</h2>
+                            <div class="stars">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= Math.Floor(Model.AverageRating))
+                                    {
+                                        <i class="fas fa-star"></i>
+                                    }
+                                    else if (i <= Model.AverageRating)
+                                    {
+                                        <i class="fas fa-star-half-alt"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="far fa-star"></i>
+                                    }
+                                }
+                            </div>
+                            <p>Based on @Model.TotalReviews reviews</p>
+                        </div>
+                    </div>
+
+                    <div class="rating-breakdown">
+                        @for (int star = 5; star >= 1; star--)
+                        {
+                            var count = Model.RatingBreakdown?.ContainsKey(star) == true ? Model.RatingBreakdown[star] : 0;
+                            var percentage = Model.TotalReviews > 0 ? (count * 100.0 / Model.TotalReviews) : 0;
+
+                            <div class="rating-bar-item">
+                                <span class="rating-label">@star <i class="fas fa-star"></i></span>
+                                <div class="rating-bar">
+                                    <div class="rating-fill" style="width: @percentage%"></div>
+                                </div>
+                                <span class="rating-count">@count</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="dashboard-card actions-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+                </div>
+                <div class="card-body">
+                    <div class="quick-actions-grid">
+                        <a asp-controller="PostJobs" asp-action="Create" class="action-btn">
+                            <i class="fas fa-plus-circle"></i>
+                            <span>Post New Service</span>
+                        </a>
+                        <a asp-controller="Bookings" asp-action="Orders" class="action-btn">
+                            <i class="fas fa-inbox"></i>
+                            <span>View Requests</span>
+                        </a>
+                        <a asp-controller="Bookings" asp-action="AcceptedBookings" class="action-btn">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>My Schedule</span>
+                        </a>
+                        <a asp-controller="Services" asp-action="MyServices" class="action-btn">
+                            <i class="fas fa-list"></i>
+                            <span>My Services</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Bookings Chart
+        const ctx = document.getElementById('bookingsChart');
+
+        const chartData = {
+            labels: @Html.Raw(Json.Serialize(Model.ChartLabels ?? new List<string> { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" })),
+            datasets: [
+                {
+                    label: 'Pending',
+                    data: @Html.Raw(Json.Serialize(Model.PendingData ?? new List<int> { 0, 0, 0, 0, 0, 0, 0 })),
+                    backgroundColor: 'rgba(255, 193, 7, 0.5)',
+                    borderColor: 'rgba(255, 193, 7, 1)',
+                    borderWidth: 2
+                },
+                {
+                    label: 'Accepted',
+                    data: @Html.Raw(Json.Serialize(Model.AcceptedData ?? new List<int> { 0, 0, 0, 0, 0, 0, 0 })),
+                    backgroundColor: 'rgba(40, 167, 69, 0.5)',
+                    borderColor: 'rgba(40, 167, 69, 1)',
+                    borderWidth: 2
+                },
+                {
+                    label: 'Completed',
+                    data: @Html.Raw(Json.Serialize(Model.CompletedData ?? new List<int> { 0, 0, 0, 0, 0, 0, 0 })),
+                    backgroundColor: 'rgba(255, 82, 59, 0.5)',
+                    borderColor: 'rgba(255, 82, 59, 1)',
+                    borderWidth: 2
+                }
+            ]
+        };
+
+        new Chart(ctx, {
+            type: 'line',
+            data: chartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}

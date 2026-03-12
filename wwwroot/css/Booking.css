@@ -1,5 +1,5 @@
 ﻿/* ============================================
-   BOOKING SYSTEM STYLES
+   BOOKING SYSTEM STYLES - ORANGE THEME
    ============================================ */
 
 /* Booking Section */
@@ -284,12 +284,6 @@
                 flex-shrink: 0;
             }
 
-            .next-steps ol li i {
-                color: #ff523b;
-                margin-right: 5px;
-                display: none;
-            }
-
 .action-buttons {
     display: flex;
     flex-direction: column;
@@ -435,9 +429,9 @@
     font-weight: 600;
 }
 
-/* Scheduled Date Highlight */
+/* Scheduled Date Highlight - CHANGED TO ORANGE */
 .scheduled-date-highlight {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #ff6b35 0%, #ff523b 100%);
     color: white;
     padding: 15px 20px;
     border-radius: 8px;
@@ -564,6 +558,14 @@
         background: #c82333;
     }
 
+.complete-btn {
+    background: #ff523b;
+}
+
+    .complete-btn:hover {
+        background: #e04a35;
+    }
+
 /* Quick Actions */
 .quick-actions {
     display: flex;
@@ -671,57 +673,6 @@
     border: 1px solid #bee5eb;
 }
 
-/* ============================================
-   RESPONSIVE STYLES
-   ============================================ */
-
-@media (min-width: 768px) {
-    .booking-container {
-        flex-direction: row;
-    }
-
-    .service-details-card {
-        flex: 0 0 350px;
-    }
-
-    .booking-form-card {
-        flex: 1;
-    }
-
-    .orders-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .orders-header {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .order-actions {
-        flex-direction: row;
-    }
-
-    .action-buttons {
-        flex-direction: row;
-        justify-content: center;
-    }
-}
-
-@media (min-width: 992px) {
-    .orders-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .service-image {
-        height: 250px;
-    }
-}
-/* ============================================
-   PRICE INPUT AND COMPARISON STYLES
-   Add these to your booking.css file
-   ============================================ */
-
 /* Price Input Styling */
 .price-input-group {
     position: relative;
@@ -748,19 +699,19 @@
 .price-help {
     margin-top: 8px;
     padding: 8px 12px;
-    background: #e7f3ff;
+    background: #fff3cd;
     border-radius: 5px;
-    border-left: 3px solid #007bff;
+    border-left: 3px solid #ff523b;
 }
 
     .price-help small {
-        color: #004085;
+        color: #856404;
         display: flex;
         align-items: center;
         gap: 8px;
     }
 
-/* Pricing Note in Service Details */
+/* Pricing Note */
 .pricing-note {
     margin-top: 20px;
     padding: 15px;
@@ -783,9 +734,9 @@
         line-height: 1.5;
     }
 
-/* Summary Row Highlighting */
+/* Summary Row Highlighting - CHANGED TO ORANGE */
 .highlight-row {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #ff6b35 0%, #ff523b 100%);
     color: white;
     padding: 12px 15px;
     border-radius: 5px;
@@ -805,7 +756,7 @@
     font-size: 0.95rem;
 }
 
-/* Price Comparison in Orders */
+/* Price Comparison */
 .price-comparison {
     display: flex;
     align-items: center;
@@ -841,7 +792,7 @@
     }
 
 .price-arrow {
-    color: #007bff;
+    color: #ff523b;
     font-size: 1.2rem;
 }
 
@@ -873,7 +824,7 @@
 /* Acceptance Note */
 .acceptance-note {
     padding: 10px 20px;
-    background: #e7f3ff;
+    background: #fff3cd;
     border-top: 2px solid #e9ecef;
     display: flex;
     align-items: center;
@@ -881,30 +832,12 @@
 }
 
     .acceptance-note i {
-        color: #004085;
+        color: #856404;
     }
 
     .acceptance-note small {
-        color: #004085;
+        color: #856404;
         line-height: 1.4;
-    }
-
-/* Accepted Bookings - Show Agreed Price */
-.agreed-price-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: #28a745;
-    color: white;
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-weight: 600;
-    font-size: 1.1rem;
-    margin-top: 10px;
-}
-
-    .agreed-price-badge i {
-        font-size: 1rem;
     }
 
 /* Price History Display */
@@ -960,7 +893,61 @@
                 font-size: 1.2rem;
             }
 
-/* Responsive Adjustments */
+/* ============================================
+   RESPONSIVE STYLES
+   ============================================ */
+
+@media (min-width: 768px) {
+    .booking-container {
+        flex-direction: row;
+    }
+
+    .service-details-card {
+        flex: 0 0 350px;
+    }
+
+    .booking-form-card {
+        flex: 1;
+    }
+
+    .orders-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .orders-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .order-actions {
+        flex-direction: row;
+    }
+
+    .action-buttons {
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .price-comparison {
+        flex-direction: row;
+    }
+
+    .price-arrow {
+        transform: none;
+    }
+}
+
+@media (min-width: 992px) {
+    .orders-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .service-image {
+        height: 250px;
+    }
+}
+
 @media (max-width: 768px) {
     .price-comparison {
         flex-direction: column;
@@ -978,4 +965,103 @@
     .highlight-row {
         margin: 10px 0;
     }
+}
+/* Completion Stats */
+.completion-stats {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.stat-item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .stat-item i {
+        font-size: 1.5rem;
+        color: #28a745;
+    }
+
+    .stat-item > div {
+        display: flex;
+        flex-direction: column;
+    }
+
+.stat-label {
+    font-size: 0.75rem;
+    color: #666;
+    text-transform: uppercase;
+}
+
+.stat-value {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Rating Display */
+.rating-display {
+    background: #fff9e6;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #ffc107;
+    margin-top: 15px;
+}
+
+    .rating-display h4 {
+        font-size: 1rem;
+        margin-bottom: 10px;
+        color: #856404;
+    }
+
+.stars {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+    .stars i {
+        font-size: 1.3rem;
+    }
+
+.rating-number {
+    margin-left: 10px;
+    font-weight: 600;
+    color: #856404;
+    font-size: 1.1rem;
+}
+
+.review-text {
+    background: white;
+    padding: 12px;
+    border-radius: 5px;
+    margin-top: 10px;
+    position: relative;
+}
+
+    .review-text i {
+        color: #ffc107;
+        font-size: 1.2rem;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+    }
+
+    .review-text p {
+        margin: 0;
+        padding-left: 30px;
+        color: #666;
+        font-style: italic;
+        line-height: 1.6;
+    }
+
+.completed-card {
+    border-top: 3px solid #28a745;
 }

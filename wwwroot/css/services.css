@@ -221,62 +221,101 @@
         background-color: #007bff;
     }
 
-/* Pagination */
+/* ============================================
+   PAGINATION STYLES ONLY - ORANGE THEME
+   Add this to the END of your existing services.css file
+   OR replace only the .pagination section
+   ============================================ */
+
+/* Pagination - Orange Theme */
 .pagination {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 30px;
-    gap: 5px;
+    gap: 8px;
+    margin-top: 40px;
     flex-wrap: wrap;
 }
 
 .page-btn {
-    display: inline-flex;
+    min-width: 45px;
+    height: 45px;
+    display: flex;
     align-items: center;
     justify-content: center;
-    width: 35px;
-    height: 35px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
     background: white;
     color: #333;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
     text-decoration: none;
     font-weight: 500;
     transition: all 0.3s ease;
-    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 0 15px;
+    font-size: 1rem;
 }
 
     .page-btn:hover {
-        background: #f0f0f0;
-        border-color: #007bff;
+        border-color: #ff523b;
+        color: #ff523b;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 82, 59, 0.2);
     }
 
     .page-btn.active {
-        background: #007bff;
-        color: white;
-        border-color: #007bff;
+        background: linear-gradient(135deg, #ff6b35 0%, #ff523b 100%);
+        border-color: #ff523b;
+        box-shadow: 0 4px 12px rgba(255, 82, 59, 0.3);
+        transform: translateY(-2px);
     }
 
     .page-btn i {
         font-size: 0.9rem;
     }
 
+    /* Pagination arrows */
+    .page-btn:first-child,
+    .page-btn:last-child {
+        background: #f8f9fa;
+    }
+
+        .page-btn:first-child:hover,
+        .page-btn:last-child:hover {
+            background: linear-gradient(135deg, #ff6b35 0%, #ff523b 100%);
+            color: white;
+            border-color: #ff523b;
+        }
+
+    /* Disabled state */
+    .page-btn:disabled,
     .page-btn.disabled {
         opacity: 0.5;
         cursor: not-allowed;
         pointer-events: none;
     }
 
-.empty-message {
-    text-align: center;
-    padding: 40px 20px;
-    color: #6c757d;
-    font-style: italic;
-    width: 100%;
-    font-size: 1rem;
+/* Responsive */
+@media (max-width: 768px) {
+    .pagination {
+        gap: 6px;
+    }
+
+    .page-btn {
+        min-width: 40px;
+        height: 40px;
+        font-size: 0.9rem;
+        padding: 0 12px;
+    }
 }
 
+@media (max-width: 480px) {
+    .page-btn {
+        min-width: 35px;
+        height: 35px;
+        font-size: 0.85rem;
+        padding: 0 10px;
+    }
+}
 /* ============================================
    TABLET STYLES (min-width: 768px)
    ============================================ */
@@ -357,10 +396,56 @@
 }
 
 .msg-btn {
-    background: #007bff;
+    background: #dc3545;
     color: white;
 }
 
     .msg-btn:hover {
         background: #0056b3;
+    }
+
+/* ============================================
+   TOP RATED BADGE - ORANGE THEME
+   Add this to your services.css file
+   ============================================ */
+
+/* Service Badge - Orange Theme */
+.service-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    z-index: 10;
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+    /* Top Rated Badge - Orange Gradient */
+    .badge-top-rated,
+    .service-badge.top-rated {
+        background: linear-gradient(135deg, #ff6b35 0%, #ff523b 100%);
+    }
+
+    /* Alternative badge types */
+    .badge-new,
+    .service-badge.new {
+        background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+    }
+
+    .badge-featured,
+    .service-badge.featured {
+        background: linear-gradient(135deg, #ff6b35 0%, #ff523b 100%);
+    }
+
+    .badge-popular,
+    .service-badge.popular {
+        background: linear-gradient(135deg, #2196f3 0%, #1565c0 100%);
+    }
+
+    .badge-verified,
+    .service-badge.verified {
+        background: linear-gradient(135deg, #9c27b0 0%, #6a1b9a 100%);
     }

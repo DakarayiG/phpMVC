@@ -1,0 +1,53 @@
+﻿
+
+@{
+    int count = ViewBag.Count;
+    ViewData["Title"] = "Default";
+
+}
+
+<div class="pending-ratings-notification">
+    <a asp-controller="Bookings" asp-action="PendingRatings" class="notification-link">
+        <i class="fas fa-star"></i>
+        <span>You have <strong>@count</strong> service@(count > 1 ? "s" : "") to rate!</span>
+        <i class="fas fa-arrow-right"></i>
+    </a>
+</div>
+
+<style>
+    .pending-ratings-notification {
+        background: linear-gradient(135deg, #ff6b35 0%, #ff523b 100%);
+        color: white;
+        padding: 12px 20px;
+        margin: 20px 0;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(255, 82, 59, 0.3);
+    }
+
+    .notification-link {
+        color: white;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 1rem;
+    }
+
+        .notification-link:hover {
+            color: #fff;
+            opacity: 0.9;
+        }
+
+        .notification-link i:first-child {
+            font-size: 1.4rem;
+        }
+
+        .notification-link strong {
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .notification-link i:last-child {
+            margin-left: auto;
+        }
+</style>

@@ -17,6 +17,8 @@
 <body>
     <!-- Header -->
     @await Html.PartialAsync("_Header")
+    @await Component.InvokeAsync("PendingRatingsNotification")
+    
 
     <!-- Main Content -->
     <main>

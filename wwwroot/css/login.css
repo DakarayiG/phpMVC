@@ -1,7 +1,7 @@
-﻿/* Login Page Styles */
+﻿/* Login Page Styles - ORANGE COLOR UPDATE ONLY */
 :root {
-    --primary-color: #4a6cf7;
-    --primary-dark: #3a5bd9;
+    --primary-color: #ff523b;
+    --primary-dark: #e04a35;
     --secondary-color: #6c757d;
     --success-color: #28a745;
     --danger-color: #dc3545;
@@ -21,7 +21,7 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #ff6b35 0%, #ff523b 50%, #f44336 100%);
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -43,7 +43,7 @@ body {
 }
 
 .login-header {
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    background: linear-gradient(135deg, #ff523b, #e04a35);
     color: white;
     padding: 2rem;
     text-align: center;
@@ -78,7 +78,7 @@ body {
 
         .form-group label i {
             margin-right: 0.5rem;
-            color: var(--primary-color);
+            color: #ff523b;
         }
 
 .form-control {
@@ -93,8 +93,8 @@ body {
 
     .form-control:focus {
         outline: none;
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.1);
+        border-color: #ff523b;
+        box-shadow: 0 0 0 3px rgba(255, 82, 59, 0.1);
     }
 
     .form-control.is-invalid {
@@ -118,7 +118,7 @@ body {
     height: 1.25rem;
     margin-right: 0.5rem;
     cursor: pointer;
-    accent-color: var(--primary-color);
+    accent-color: #ff523b;
 }
 
 .form-check-label {
@@ -139,7 +139,7 @@ body {
 }
 
 .btn-primary {
-    background: var(--primary-color);
+    background: #ff523b;
     color: white;
     width: 100%;
     padding: 1rem;
@@ -147,21 +147,21 @@ body {
 }
 
     .btn-primary:hover {
-        background: var(--primary-dark);
+        background: #e04a35;
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(74, 108, 247, 0.3);
+        box-shadow: 0 5px 15px rgba(255, 82, 59, 0.3);
     }
 
 .btn-link {
     background: transparent;
-    color: var(--primary-color);
+    color: #ff523b;
     text-decoration: underline;
     padding: 0;
 }
 
     .btn-link:hover {
         background: transparent;
-        color: var(--primary-dark);
+        color: #e04a35;
     }
 
 .forgot-password {
@@ -176,7 +176,7 @@ body {
     }
 
         .forgot-password a:hover {
-            color: var(--primary-color);
+            color: #ff523b;
             text-decoration: underline;
         }
 
@@ -206,7 +206,7 @@ body {
 }
 
     .register-link a {
-        color: var(--primary-color);
+        color: #ff523b;
         text-decoration: none;
         font-weight: 500;
     }

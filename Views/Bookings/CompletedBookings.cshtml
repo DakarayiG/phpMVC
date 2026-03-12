@@ -1,0 +1,188 @@
+﻿@model List<phpMVC.Models.Booking>
+@{
+    ViewData["Title"] = "Completed Jobs | WorkConnect";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/booking.css" />
+}
+
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <h1>Completed Jobs</h1>
+        <p>View your finished work and customer ratings</p>
+    </div>
+</section>
+
+<!-- Completed Jobs Section -->
+<section class="orders-section">
+    <div class="container">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle"></i>
+                @TempData["SuccessMessage"]
+            </div>
+        }
+
+        <div class="orders-header">
+            <h2>
+                <i class="fas fa-check-double"></i>
+                Completed Jobs
+                <span class="badge badge-success">@Model.Count</span>
+            </h2>
+            <div style="display: flex; gap: 10px;">
+                <a asp-action="Orders" class="btn btn-outline">
+                    <i class="fas fa-clock"></i> Pending Orders
+                </a>
+                <a asp-action="AcceptedBookings" class="btn btn-outline">
+                    <i class="fas fa-check-circle"></i> Accepted Jobs
+                </a>
+            </div>
+        </div>
+
+        @if (Model.Any())
+        {
+            <div class="orders-grid">
+                @foreach (var booking in Model)
+                {
+                    <div class="order-card completed-card">
+                        <div class="order-header">
+                            <span class="order-status status-completed">
+                                <i class="fas fa-check-double"></i> Completed
+                            </span>
+                            <span class="order-date">
+                                <i class="fas fa-calendar-check"></i>
+                                Completed: @(booking.UpdatedAt?.ToString("MMM dd, yyyy") ?? "Recently")
+                            </span>
+                        </div>
+
+                        <div class="order-body">
+                            <!-- Service Info -->
+                            <div class="service-info-section">
+                                @if (!string.IsNullOrEmpty(booking.ServiceImage))
+                                {
+                                    <img src="@booking.ServiceImage" alt="@booking.ServiceName" class="order-service-image" />
+                                }
+                                <div class="service-details">
+                                    <h3>@booking.ServiceName</h3>
+
+                                    <!-- Final Price -->
+                                    <div class="agreed-price-badge">
+                                        <i class="fas fa-dollar-sign"></i>
+                                        $@(booking.AgreedPrice?.ToString("0.00") ?? booking.ProposedPrice.ToString("0.00"))
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Service Date -->
+                            <div class="info-item" style="background: #d4edda; border-left: 4px solid #28a745;">
+                                <i class="fas fa-calendar-check" style="color: #28a745;"></i>
+                                <div>
+                                    <strong>Service Date:</strong> @booking.BookingDate.ToString("dddd, MMMM dd, yyyy")
+                                </div>
+                            </div>
+
+                            <!-- Customer Info -->
+                            <div class="customer-info">
+                                <h4><i class="fas fa-user"></i> Customer</h4>
+                                <div class="info-row">
+                                    <i class="fas fa-user-circle"></i>
+                                    <span>@booking.CustomerName</span>
+                                </div>
+                                <div class="info-row">
+                                    <i class="fas fa-envelope"></i>
+                                    <a href="mailto:@booking.CustomerEmail">@booking.CustomerEmail</a>
+                                </div>
+                                @if (!string.IsNullOrEmpty(booking.CustomerPhone))
+                                {
+                                    <div class="info-row">
+                                        <i class="fas fa-phone"></i>
+                                        <a href="tel:@booking.CustomerPhone">@booking.CustomerPhone</a>
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- Job Summary -->
+                            <div class="booking-details">
+                                <h4><i class="fas fa-clipboard-list"></i> Work Completed</h4>
+                                <div class="customer-notes">
+                                    <i class="fas fa-comment-dots"></i>
+                                    <div>
+                                        <p>@booking.CustomerNotes</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Completion Stats -->
+                            <div class="completion-stats">
+                                <div class="stat-item">
+                                    <i class="fas fa-calendar"></i>
+                                    <div>
+                                        <span class="stat-label">Booked On</span>
+                                        <span class="stat-value">@booking.CreatedAt.ToString("MMM dd, yyyy")</span>
+                                    </div>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="fas fa-check-circle"></i>
+                                    <div>
+                                        <span class="stat-label">Status</span>
+                                        <span class="stat-value">Completed ✓</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Rating Display (if customer has rated) -->
+                            @if (booking.Rating.HasValue)
+                            {
+                                <div class="rating-display">
+                                    <h4><i class="fas fa-star"></i> Customer Rating</h4>
+                                    <div class="stars">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            if (i <= booking.Rating.Value)
+                                            {
+                                                <i class="fas fa-star" style="color: #ffc107;"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="far fa-star" style="color: #ffc107;"></i>
+                                            }
+                                        }
+                                        <span class="rating-number">@booking.Rating.Value.ToString("0.0") / 5.0</span>
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(booking.ReviewText))
+                                    {
+                                        <div class="review-text">
+                                            <i class="fas fa-quote-left"></i>
+                                            <p>"@booking.ReviewText"</p>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="status-message status-info">
+                                    <i class="fas fa-hourglass-half"></i>
+                                    <span>Waiting for customer rating</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="fas fa-clipboard-check"></i>
+                <h3>No Completed Jobs Yet</h3>
+                <p>Jobs you complete will appear here with customer ratings.</p>
+                <a asp-action="AcceptedBookings" class="btn btn-primary">
+                    <i class="fas fa-check-circle"></i> View Accepted Jobs
+                </a>
+            </div>
+        }
+    </div>
+</section>
