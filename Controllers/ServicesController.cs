@@ -91,10 +91,10 @@ namespace phpMVC.Controllers
                     if (!string.IsNullOrEmpty(model.ServiceType))
                     {
                         whereClauses.Add(@"
-                    (LOWER(s.Name) LIKE @serviceType 
-                     OR LOWER(s.Description) LIKE @serviceType
-                     OR LOWER(s.Name) LIKE @serviceTypeStart
-                     OR LOWER(s.Description) LIKE @serviceTypeStart)");
+                            (LOWER(s.Name) LIKE @serviceType 
+                             OR LOWER(s.Description) LIKE @serviceType
+                             OR LOWER(s.Name) LIKE @serviceTypeStart
+                             OR LOWER(s.Description) LIKE @serviceTypeStart)");
 
                         string searchTermLower = model.ServiceType.ToLower();
                         parameters.Add(new MySqlParameter("@serviceType", "%" + searchTermLower + "%"));
@@ -120,11 +120,13 @@ namespace phpMVC.Controllers
                         parameters.Add(new MySqlParameter("@minPrice", minPrice));
                         parameters.Add(new MySqlParameter("@maxPrice", maxPrice));
                     }
+
                     if (model.ProviderId.HasValue && model.ProviderId.Value > 0)
                     {
                         whereClauses.Add("s.ProviderId = @providerId");
                         parameters.Add(new MySqlParameter("@providerId", model.ProviderId.Value));
                     }
+
                     // Get sort order
                     string sortOrder = GetSortOrder(model.SortBy);
 
@@ -142,17 +144,17 @@ namespace phpMVC.Controllers
                         model.TotalServices = Convert.ToInt32(countCmd.ExecuteScalar());
                     }
 
-                    // Get paginated data - JOIN with h_users to get provider names
+                    // Get paginated data - JOIN with h_users to get provider names AND provider images
                     int offset = (model.Page - 1) * _pageSize;
                     string dataQuery = $@"
-                SELECT s.Id, s.Name, s.Description, s.location, s.duration, s.availability, 
-                       s.rating, s.reviewcount, s.price, s.serviceImages, s.providerImages,
-                       s.ProviderId, u.FirstName, u.LastName
-                FROM service s
-                INNER JOIN h_users u ON s.ProviderId = u.Id
-                {whereClause} 
-                ORDER BY {sortOrder}
-                LIMIT {_pageSize} OFFSET {offset}";
+                        SELECT s.Id, s.Name, s.Description, s.location, s.duration, s.availability, 
+                               s.rating, s.reviewcount, s.price, s.serviceImages,
+                               s.ProviderId, u.FirstName, u.LastName, u.ProviderImage
+                        FROM service s
+                        INNER JOIN h_users u ON s.ProviderId = u.Id
+                        {whereClause} 
+                        ORDER BY {sortOrder}
+                        LIMIT {_pageSize} OFFSET {offset}";
 
                     using (var dataCmd = new MySqlCommand(dataQuery, connection))
                     {
@@ -176,7 +178,7 @@ namespace phpMVC.Controllers
                                     Rating = Convert.ToDouble(reader["rating"]),
                                     ReviewCount = Convert.ToInt32(reader["reviewcount"]),
                                     Price = Convert.ToDecimal(reader["price"]),
-                                    ProviderId = Convert.ToInt32(reader["ProviderId"]) // Get provider ID
+                                    ProviderId = Convert.ToInt32(reader["ProviderId"])
                                 };
 
                                 // Get provider name from h_users table
@@ -196,8 +198,8 @@ namespace phpMVC.Controllers
                                     service.ImageUrl = GetDefaultServiceImage();
                                 }
 
-                                // Handle provider image
-                                string providerImage = reader["providerImages"]?.ToString();
+                                // ✅ FIX: Get provider image DIRECTLY from h_users table
+                                string providerImage = reader["ProviderImage"]?.ToString();
                                 if (!string.IsNullOrEmpty(providerImage))
                                 {
                                     service.ProviderImage = NormalizeImageUrl(providerImage);
@@ -239,6 +241,7 @@ namespace phpMVC.Controllers
 
             return services;
         }
+
         private (decimal minPrice, decimal maxPrice) GetPriceRange(string priceRange)
         {
             return priceRange switch
@@ -258,8 +261,8 @@ namespace phpMVC.Controllers
             {
                 "price_low" => "price ASC",
                 "price_high" => "price DESC",
-                "newest" => "Id DESC",
-                _ => "rating DESC, reviewcount DESC"
+                "newest" => "s.Id DESC",
+                _ => "s.rating DESC, s.reviewcount DESC"
             };
         }
 
@@ -338,52 +341,6 @@ namespace phpMVC.Controllers
             return images;
         }
 
-        //// New method to get multiple images for a service
-        //public List<string> GetServiceImages(int serviceId)
-        //{
-        //    var images = new List<string>();
-        //    var connectionString = _configuration.GetConnectionString("MySqlConnection");
-
-        //    using (var connection = new MySqlConnection(connectionString))
-        //    {
-        //        try
-        //        {
-        //            connection.Open();
-        //            string query = "SELECT serviceImages FROM service WHERE Id = @id";
-
-        //            using (var cmd = new MySqlCommand(query, connection))
-        //            {
-        //                cmd.Parameters.AddWithValue("@id", serviceId);
-
-        //                var result = cmd.ExecuteScalar();
-        //                if (result != null && !string.IsNullOrEmpty(result.ToString()))
-        //                {
-        //                    string[] imageArray = result.ToString().Split(',');
-        //                    foreach (var img in imageArray)
-        //                    {
-        //                        if (!string.IsNullOrEmpty(img.Trim()))
-        //                        {
-        //                            images.Add(img.Trim());
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Console.WriteLine($"Error getting service images: {ex.Message}");
-        //        }
-        //    }
-
-        //    // If no images in database, return at least one default
-        //    if (images.Count == 0)
-        //    {
-        //        images.Add(GetDefaultServiceImage());
-        //    }
-
-        //    return images;
-        //}
-
         private string NormalizeImageUrl(string imagePath)
         {
             if (string.IsNullOrWhiteSpace(imagePath))
@@ -417,77 +374,5 @@ namespace phpMVC.Controllers
             // Plain filename only — e.g. "abc123.jpg"
             return "/UploadedImages/" + imagePath;
         }
-        //private string NormalizeImageUrl(string imagePath)
-        //{
-        //    if (string.IsNullOrWhiteSpace(imagePath))
-        //        return GetDefaultServiceImage();
-
-        //    imagePath = imagePath.Trim();
-
-        //    // Absolute URL (external)
-        //    if (imagePath.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
-        //        imagePath.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
-        //    {
-        //        return imagePath;
-        //    }
-
-        //    // If it's already a full path with UploadedImages/, use it as is
-        //    if (imagePath.StartsWith("UploadedImages/", StringComparison.OrdinalIgnoreCase))
-        //    {
-        //        return Url.Content("~/" + imagePath);
-        //    }
-
-        //    // For filenames only, add the UploadedImages/ prefix
-        //    return Url.Content("~/UploadedImages/" + imagePath);
-        //}
-
-        //private string NormalizeImageUrl(string imagePath)
-        //{
-        //    if (string.IsNullOrWhiteSpace(imagePath))
-        //        return GetDefaultServiceImage();
-
-        //    imagePath = imagePath.Trim();
-
-        //    // Absolute URL (external)
-        //    if (imagePath.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
-        //        imagePath.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
-        //    {
-        //        return imagePath;
-        //    }
-
-        //    // Remove leading ~ or /
-        //    imagePath = imagePath.TrimStart('~', '/');
-
-        //    // IF DB already contains UploadedImages/
-        //    if (imagePath.StartsWith("UploadedImages/", StringComparison.OrdinalIgnoreCase))
-        //    {
-        //        return Url.Content("~/" + imagePath);
-        //    }
-
-        //    // Otherwise assume it's a filename only
-        //    return Url.Content("~/UploadedImages/" + imagePath);
-        //}
-
-
-        //private string NormalizeImageUrl(string imagePath)
-        //{
-        //    if (string.IsNullOrWhiteSpace(imagePath))
-        //        return GetDefaultServiceImage();
-
-        //    imagePath = imagePath.Trim();
-
-        //    // Already absolute URL
-        //    if (imagePath.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
-        //        imagePath.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
-        //    {
-        //        return imagePath;
-        //    }
-
-        //    // Ensure no leading slash duplication
-        //    imagePath = imagePath.TrimStart('/');
-
-        //    // Convert relative path to absolute web path
-        //    return Url.Content("~/UploadedImages/" + imagePath);
-        //}
     }
 }

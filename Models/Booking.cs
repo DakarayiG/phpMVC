@@ -52,27 +52,15 @@ namespace phpMVC.Models
     {
         public int ServiceId { get; set; }
 
-        //[Required(ErrorMessage = "Please select a booking date")]
-        //[Display(Name = "Booking Date")]
-        //[DataType(DataType.Date)]
+        
         public DateTime BookingDate { get; set; }
 
-        //[Required(ErrorMessage = "Please describe what you need")]
-        //[Display(Name = "Description of Work Needed")]
-        //[StringLength(1000, ErrorMessage = "Description cannot exceed 1000 characters")]
+        
         public string CustomerNotes { get; set; }
 
-        //// NEW: Customer's proposed price
-        //[Required(ErrorMessage = "Please enter your proposed price")]
-        //[Display(Name = "Your Proposed Price")]
-        //[Range(0.01, 100000, ErrorMessage = "Price must be between $0.01 and $100,000")]
+      
         public decimal ProposedPrice { get; set; }
 
-        // In your Booking class, add these properties:
-
-      
-
-        // Service details for display
         public string ServiceName { get; set; }
         public string ServiceDescription { get; set; }
         public decimal ServicePrice { get; set; }

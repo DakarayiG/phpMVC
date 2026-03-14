@@ -27,7 +27,9 @@ namespace phpMVC.Controllers
         [HttpGet]
         public IActionResult Register()
         {
-            return View();
+            
+                return View();
+            
         }
 
         // POST: /Account/Register
@@ -35,15 +37,12 @@ namespace phpMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         { // 🔴 TEMPORARILY CLEAR ALL MODEL ERRORS
-            ModelState.Clear();
-
+          // ModelState.Clear();
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
             // OR completely bypass validation check
-
-
-            
-            //    if (ModelState.IsValid)
-            //    {
-            // Just proceed with registration regardless of ModelState
 
             var connectionString = _configuration.GetConnectionString("MySqlConnection");
 
@@ -103,8 +102,9 @@ namespace phpMVC.Controllers
                 TempData["RegistrationSuccess"] = "Account created successfully! Please log in.";
                 return RedirectToAction("Login");
             }
-
-            return View(model);
+           
+                return View(model);
+            
         }
 
         // GET: /Account/Login
@@ -195,76 +195,7 @@ namespace phpMVC.Controllers
             return View(model);
         }
 
-        // POST: /Account/Login
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
-        //{
-        //    ViewBag.ReturnUrl = returnUrl;
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        var connectionString = _configuration.GetConnectionString("MySqlConnection");
-
-        //        using (var connection = new MySqlConnection(connectionString))
-        //        {
-        //            await connection.OpenAsync();
-
-        //            string query = @"
-        //                SELECT Id, FirstName, LastName, Email, Password, UserType, IsActive 
-        //                FROM h_users 
-        //                WHERE Email = @email";
-
-        //            using (var cmd = new MySqlCommand(query, connection))
-        //            {
-        //                cmd.Parameters.AddWithValue("@email", model.Email);
-
-        //                using (var reader = await cmd.ExecuteReaderAsync())
-        //                {
-        //                    if (await reader.ReadAsync())
-        //                    {
-        //                        string storedHash = reader["Password"].ToString();
-        //                        bool isActive = Convert.ToBoolean(reader["IsActive"]);
-
-        //                        if (!isActive)
-        //                        {
-        //                            ModelState.AddModelError(string.Empty, "This account has been deactivated.");
-        //                            return View(model);
-        //                        }
-
-        //                        if (VerifyPassword(model.Password, storedHash))
-        //                        {
-        //                            // Update last login
-        //                            reader.Close();
-        //                            string updateQuery = "UPDATE h_users SET LastLogin = NOW() WHERE Id = @id";
-        //                            using (var updateCmd = new MySqlCommand(updateQuery, connection))
-        //                            {
-        //                                updateCmd.Parameters.AddWithValue("@id", reader["Id"]);
-        //                                await updateCmd.ExecuteNonQueryAsync();
-        //                            }
-
-        //                            // Set session/cookie (you can expand this with actual authentication)
-        //                            HttpContext.Session.SetString("UserId", reader["Id"].ToString());
-        //                            HttpContext.Session.SetString("UserEmail", reader["Email"].ToString());
-        //                            HttpContext.Session.SetString("UserName", $"{reader["FirstName"]} {reader["LastName"]}");
-        //                            HttpContext.Session.SetString("UserType", reader["UserType"].ToString());
-
-        //                            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-        //                            {
-        //                                return Redirect(returnUrl);
-        //                            }
-        //                            return RedirectToAction("Index", "Home");
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }
-
-        //        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-        //    }
-
-        //    return View(model);
-        //}
+      
 
         // POST: /Account/Logout
         [HttpPost]

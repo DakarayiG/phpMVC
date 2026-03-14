@@ -1,0 +1,209 @@
+﻿@model phpMVC.Models.ProfileViewModel
+@{
+    ViewData["Title"] = "Edit Profile | WorkConnect";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/profile.css" />
+}
+
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <h1>Edit Profile</h1>
+        <p>Update your personal information</p>
+    </div>
+</section>
+
+<!-- Edit Profile Section -->
+<section class="profile-section">
+    <div class="container">
+        <div class="profile-container">
+            <div class="profile-main" style="max-width: 600px; margin: 0 auto;">
+                <div class="profile-section-card">
+                    <h3><i class="fas fa-user-edit"></i> Edit Profile Information</h3>
+
+                    <!-- Success Message -->
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle"></i>
+                            @TempData["SuccessMessage"]
+                        </div>
+                    }
+
+                    <!-- Error Summary -->
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Please correct the following errors:</strong>
+                            <ul style="margin-top: 10px; margin-bottom: 0;">
+                                @foreach (var modelState in ViewData.ModelState.Values)
+                                {
+                                    foreach (var error in modelState.Errors)
+                                    {
+                                        <li>@error.ErrorMessage</li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    }
+
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+
+                        <!-- Hidden fields for required data -->
+                        <input type="hidden" asp-for="Email" />
+                        <input type="hidden" asp-for="UserType" />
+
+                        <!-- Profile Image Upload - ONLY SHOW FOR PROVIDERS -->
+                        @if (Model.UserType == "provider")
+                        {
+                            <div class="image-upload-section">
+                                <h4><i class="fas fa-camera"></i> Profile Picture</h4>
+
+                                <div class="image-preview-container">
+                                    <div class="current-image">
+                                        <img src="@(Model.ProfileImagePath ?? "/images/default-avatar.png")"
+                                             alt="Profile"
+                                             class="profile-image-preview"
+                                             id="profileImagePreview"
+                                             onerror="this.onerror=null; this.src='/images/default-avatar.png';" />
+                                    </div>
+
+                                    <div class="upload-controls">
+                                        <button type="button" class="btn btn-outline" onclick="document.getElementById('profileImage').click()">
+                                            <i class="fas fa-upload"></i> Choose Image
+                                        </button>
+                                        <button type="button" class="btn btn-secondary" onclick="removeImage()">
+                                            <i class="fas fa-times"></i> Remove
+                                        </button>
+                                    </div>
+
+                                    <input type="file" asp-for="ProfileImage"
+                                           id="profileImage"
+                                           style="display: none;"
+                                           accept="image/*"
+                                           onchange="previewImage(this)" />
+
+                                    <div class="form-text">
+                                        <small>Max file size: 5MB. Supported: JPG, PNG, GIF, WEBP</small>
+                                    </div>
+                                    <span asp-validation-for="ProfileImage" class="text-danger"></span>
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Name Fields -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label asp-for="FirstName">
+                                    <i class="fas fa-user"></i> First Name
+                                </label>
+                                <input asp-for="FirstName" class="form-control" placeholder="Enter your first name" />
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="LastName">
+                                    <i class="fas fa-user"></i> Last Name
+                                </label>
+                                <input asp-for="LastName" class="form-control" placeholder="Enter your last name" />
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Email - DISPLAY ONLY -->
+                        <div class="form-group">
+                            <label asp-for="Email">
+                                <i class="fas fa-envelope"></i> Email Address
+                            </label>
+                            <div class="form-control-plaintext">
+                                <strong>@Model.Email</strong>
+                            </div>
+                            <small class="form-text text-muted">Email cannot be changed.</small>
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="form-group">
+                            <label asp-for="Phone">
+                                <i class="fas fa-phone"></i> Phone Number
+                            </label>
+                            <input asp-for="Phone" class="form-control" placeholder="+1 234 567 8900" />
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </div>
+
+                        <!-- WhatsApp -->
+                        <div class="form-group">
+                            <label asp-for="WhatsApp">
+                                <i class="fab fa-whatsapp"></i> WhatsApp Number (Optional)
+                            </label>
+                            <input asp-for="WhatsApp" class="form-control" placeholder="+1 234 567 8900" />
+                            <span asp-validation-for="WhatsApp" class="text-danger"></span>
+                        </div>
+
+                        <!-- Address -->
+                        <div class="form-group">
+                            <label asp-for="Address">
+                                <i class="fas fa-map-marker-alt"></i> Address (Optional)
+                            </label>
+                            <textarea asp-for="Address" class="form-control" rows="3" placeholder="Enter your address"></textarea>
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Save Changes
+                            </button>
+                            <a asp-action="Index" class="btn btn-link">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // Image preview functionality - only used if provider
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const reader = new FileReader();
+
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size exceeds 5MB limit.');
+                    input.value = '';
+                    return;
+                }
+
+                const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                if (!validTypes.includes(file.type)) {
+                    alert('Please select a valid image file (JPG, PNG, GIF, WEBP).');
+                    input.value = '';
+                    return;
+                }
+
+                reader.onload = function (e) {
+                    document.getElementById('profileImagePreview').src = e.target.result;
+                };
+
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Remove selected image - only used if provider
+        function removeImage() {
+            const input = document.getElementById('profileImage');
+            if (input) {
+                input.value = '';
+                document.getElementById('profileImagePreview').src = '@(Model.ProfileImagePath ?? "/images/default-avatar.png")';
+            }
+        }
+    </script>
+    <partial name="_ValidationScriptsPartial" />
+}

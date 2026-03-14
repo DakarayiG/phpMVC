@@ -45,11 +45,30 @@
             }
 
             <!-- ERROR MESSAGE -->
-            @if (TempData["ErrorMessage"] != null)
+            <!-- ERROR MESSAGES - Show both TempData and ModelState errors -->
+            @if (!ViewData.ModelState.IsValid || TempData["ErrorMessage"] != null)
             {
                 <div class="alert alert-danger" style="margin-bottom: 20px; padding: 15px; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 5px; color: #721c24;">
                     <i class="fas fa-exclamation-triangle"></i>
-                    <strong>@TempData["ErrorMessage"]</strong>
+                    <strong>Please correct the following errors:</strong>
+
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div style="margin-top: 10px;">@TempData["ErrorMessage"]</div>
+                    }
+
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <ul style="margin-top: 10px; margin-bottom: 0; padding-left: 20px;">
+                            @foreach (var modelState in ViewData.ModelState.Values)
+                            {
+                                foreach (var error in modelState.Errors)
+                                {
+                                    <li style="margin-bottom: 5px;">@error.ErrorMessage</li>
+                                }
+                            }
+                        </ul>
+                    }
                 </div>
             }
 

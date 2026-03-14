@@ -574,7 +574,7 @@ namespace phpMVC.Controllers
                                     CreatedAt = Convert.ToDateTime(reader["CreatedAt"]),
                                     UpdatedAt = reader["UpdatedAt"] != DBNull.Value ? Convert.ToDateTime(reader["UpdatedAt"]) : (DateTime?)null,
                                     ServiceName = reader["ServiceName"].ToString(),
-                                    ServiceImage = reader["ServiceImage"]?.ToString() ?? "",
+                                    ServiceImage = NormalizeImageUrl(reader["ServiceImage"]?.ToString() ?? ""),  // ✅ FIXED
                                     ProviderName = $"{reader["ProviderFirstName"]} {reader["ProviderLastName"]}"
                                 });
                             }

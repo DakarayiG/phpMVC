@@ -31,6 +31,8 @@
                     <li><a asp-controller="Bookings" asp-action="Orders">Orders</a></li>
                     <li><a asp-controller="Bookings" asp-action="AcceptedBookings">Accepted</a></li>
                     <li><a asp-controller="Bookings" asp-action="CompletedBookings">Completed Orders</a></li>
+                    <li><a asp-controller="ProviderServices" asp-action="Index">My Services</a></li> 
+
                     <li><a asp-controller="Provider" asp-action="Dashboard">Dashboard</a></li>
 
                 }
@@ -88,6 +90,9 @@
                             <span class="dropdown-name">@userName</span>
                             <span class="dropdown-type @userType">@userType</span>
                         </div>
+                        <a asp-controller="Profile" asp-action="Index" class="dropdown-item">
+                            <i class="fas fa-user"></i> My Profile
+                        </a>
                         @if (isProvider)
                         {
                             <a asp-controller="Provider" asp-action="Dashboard" class="dropdown-item">
@@ -138,6 +143,8 @@
                 <li><a asp-controller="Bookings" asp-action="Orders">Orders</a></li>
                 <li><a asp-controller="Bookings" asp-action="AcceptedBookings">Accepted Orders</a></li>
                 <li><a asp-controller="Bookings" asp-action="CompletedBookings">Completed Orders</a></li>
+                <li><a asp-controller="ProviderServices" asp-action="Index">My Services</a></li>
+
                 <li><a asp-controller="Provider" asp-action="Dashboard">Dashboard</a></li>
 
             }
@@ -149,6 +156,7 @@
 
             @if (isLoggedIn)
             {
+                <li><a asp-controller="Profile" asp-action="Index"><i class="fas fa-user"></i> My Profile</a></li>
                 <li><a asp-controller="Chat" asp-action="Index">💬 Chats</a></li>
                 @if (isAdmin)
                 {

@@ -1,0 +1,191 @@
+﻿@model phpMVC.Models.ProfileViewModel
+@{
+    ViewData["Title"] = "My Profile | WorkConnect";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/profile.css" />
+}
+
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <h1>My Profile</h1>
+        <p>Manage your personal information and settings</p>
+    </div>
+</section>
+
+<!-- Profile Section -->
+<section class="profile-section">
+    <div class="container">
+        <!-- Success Message -->
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle"></i>
+                @TempData["SuccessMessage"]
+            </div>
+        }
+
+        <!-- Error Message -->
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle"></i>
+                @TempData["ErrorMessage"]
+            </div>
+        }
+
+        <div class="profile-container">
+            <!-- Profile Sidebar -->
+            <div class="profile-sidebar">
+                <div class="profile-card">
+                    <div class="profile-image-container">
+                        @if (Model.UserType == "provider")
+                        {
+                            <!-- Providers: Show uploaded image with edit overlay -->
+                            <img src="@(Model.ProfileImagePath ?? "/images/default-avatar.png")"
+                                 alt="@Model.FirstName @Model.LastName"
+                                 class="profile-image"
+                                 onerror="this.src='/images/default-avatar.png'" />
+                            @if (Model.UserType == "provider")
+                            {
+                                <div class="profile-image-overlay">
+                                    <a href="@Url.Action("Edit")" class="btn-icon">
+                                        <i class="fas fa-camera"></i>
+                                    </a>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <!-- Customers: Simple icon only -->
+                            <div class="customer-avatar">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Name and type - still show for both -->
+                    <h2 class="profile-name">@Model.FirstName @Model.LastName</h2>
+                    <p class="profile-type">
+                        @if (Model.UserType == "provider")
+                        {
+                            <span class="badge provider"><i class="fas fa-briefcase"></i> Service Provider</span>
+                        }
+                        else
+                        {
+                            <span class="badge customer"><i class="fas fa-user"></i> Customer</span>
+                        }
+                    </p>
+
+                    <p class="profile-member-since">
+                        <i class="fas fa-calendar-alt"></i> Member since @Model.MemberSince
+                    </p>
+
+                    <div class="profile-stats">
+                        @if (Model.UserType == "provider")
+                        {
+                            <div class="stat-item">
+                                <span class="stat-value">@Model.TotalServices</span>
+                                <span class="stat-label">Services</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">@Model.TotalBookings</span>
+                                <span class="stat-label">Bookings</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">@Model.AverageRating.ToString("0.0")</span>
+                                <span class="stat-label">Rating</span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="stat-item">
+                                <span class="stat-value">@Model.TotalBookings</span>
+                                <span class="stat-label">Bookings</span>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="profile-contact">
+                        <h3>Contact Information</h3>
+                        <p><i class="fas fa-envelope"></i> @Model.Email</p>
+                        <p><i class="fas fa-phone"></i> @Model.Phone</p>
+                        @if (!string.IsNullOrEmpty(Model.WhatsApp))
+                        {
+                            <p><i class="fab fa-whatsapp"></i> @Model.WhatsApp</p>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.Address))
+                        {
+                            <p><i class="fas fa-map-marker-alt"></i> @Model.Address</p>
+                        }
+                    </div>
+
+                    <div class="profile-actions">
+                        <a href="@Url.Action("Edit")" class="btn btn-primary btn-block">
+                            <i class="fas fa-edit"></i> Edit Profile
+                        </a>
+                        <a href="@Url.Action("ChangePassword")" class="btn btn-outline btn-block">
+                            <i class="fas fa-key"></i> Change Password
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Main Content -->
+            <div class="profile-main">
+                <!-- Quick Actions -->
+                <div class="profile-section-card">
+                    <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+
+                    <div class="quick-actions-grid">
+                        @if (Model.UserType == "provider")
+                        {
+                            <a href="@Url.Action("Create", "PostJobs")" class="action-card">
+                                <i class="fas fa-plus-circle"></i>
+                                <span>Post New Service</span>
+                            </a>
+
+                            <a href="@Url.Action("Index", "ProviderServices")" class="action-card">
+                                <i class="fas fa-list"></i>
+                                <span>My Services</span>
+                            </a>
+                        }
+
+                        <a href="@Url.Action("MyBookings", "Bookings")" class="action-card">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>My Bookings</span>
+                        </a>
+
+                        <a href="@Url.Action("Index", "Services")" class="action-card">
+                            <i class="fas fa-search"></i>
+                            <span>Browse Services</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="profile-section-card">
+                    <h3><i class="fas fa-history"></i> Recent Activity</h3>
+
+                    @if (Model.TotalBookings > 0)
+                    {
+                        <p class="text-muted">
+                            <i class="fas fa-check-circle text-success"></i>
+                            You have @Model.TotalBookings booking(s).
+                            <a href="@Url.Action("MyBookings", "Bookings")">View all</a>
+                        </p>
+                    }
+                    else
+                    {
+                        <p class="text-muted">
+                            <i class="fas fa-info-circle"></i>
+                            No recent activity to show.
+                        </p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

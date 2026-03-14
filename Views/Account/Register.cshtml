@@ -1,7 +1,7 @@
 ﻿@model phpMVC.Models.RegisterViewModel
 @{
     ViewData["Title"] = "Create Account | WorkConnect";
-    Layout = "_AuthLayout"; // 👈 Use auth layout
+    Layout = "_AuthLayout"; //  Use auth layout
 
 }
 
@@ -21,10 +21,18 @@
             {
                 <div class="alert alert-danger">
                     <i class="fas fa-exclamation-circle"></i>
-                    Please correct the errors below.
+                    <strong>Please correct the following errors:</strong>
+                    <ul style="margin-top: 10px; margin-bottom: 0;">
+                        @foreach (var modelState in ViewData.ModelState.Values)
+                        {
+                            foreach (var error in modelState.Errors)
+                            {
+                                <li>@error.ErrorMessage</li>
+                            }
+                        }
+                    </ul>
                 </div>
             }
-
             <form asp-action="Register" method="post" enctype="multipart/form-data">
                 @Html.AntiForgeryToken()
 
@@ -41,6 +49,7 @@
                             <span><i class="fas fa-briefcase"></i> Service Provider (Offering services)</span>
                         </label>
                     </div>
+
                 </div>
 
                 <!-- Provider Image Upload (Shown only for providers) -->
