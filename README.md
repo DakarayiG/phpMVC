@@ -12,10 +12,10 @@ A full-stack web application connecting service providers with customers, featur
 ## 📋 Table of Contents
 - [Overview](#overview)
 - [Key Features](#key-features)
+- [Videos walkthrough](#Video-walk-through)
 - [Technology Stack](#technology-stack)
 - [Architecture & Design Patterns](#architecture--design-patterns)
 - [Database Schema](#database-schema)
-- [Screenshots](#screenshots)
 - [Installation & Setup](#installation--setup)
 - [API Endpoints](#api-endpoints)
 - [Security Features](#security-features)
@@ -31,8 +31,8 @@ A full-stack web application connecting service providers with customers, featur
 **WorkConnect** is a modern service marketplace platform that bridges the gap between service providers and customers. Built with ASP.NET Core MVC and MySQL, it provides a seamless experience for discovering services, managing bookings, real-time communication, and business analytics.
 
 ### **User Roles:**
-- **👥 Customers:** Browse services, book providers, negotiate pricing, submit ratings, chat with providers
-- **💼 Service Providers:** Post services, manage bookings, track earnings, view analytics, edit services, deactivate services
+- **👥 Customers:** Browse services, book providers, negotiate pricing, submit ratings
+- **💼 Service Providers:** Post services, manage bookings, track earnings, view analytics
 - **🛡️ Administrators:** Monitor platform activity, moderate content, manage users
 
 ---
@@ -88,8 +88,29 @@ A full-stack web application connecting service providers with customers, featur
 - Smooth animations and transitions
 - Accessible forms with client-side validation
 
+
 ---
 
+
+## 📸 Video walk through
+
+### **Provider flow of events 1**
+![Provider flow of events 1](https://github.com/user-attachments/assets/ce347ab7-f014-4d03-b59b-848cb890efa0)
+*Logged in provider can post a job. Open the chat tab and chat with a potential client. View their orders and choose to accept, reject or negotiate the deal. Provider can see the different stages the service is in. View dashoard* 
+
+### **Provider flow of events 2**
+![Provider flow of events 2](https://github.com/user-attachments/assets/16b6cc17-78ba-4b2a-b7ab-13d6a514ca18)
+*Provider can view their published services and choose to deactivate a service ro remove it from customers view. Can edit service information. Provders and Customers can edit their profile information.* 
+
+### **Cutomer flow of events 1**
+![Cutomer flow of events 1](https://github.com/user-attachments/assets/d9531458-9a70-4985-a1b9-a12ee2733e1d)
+*Logged in customer browses through services, searches for a specific service, books service*
+
+### **Cutomer flow of events 2**
+![Cutomer flow of events 2](https://github.com/user-attachments/assets/6214a6aa-82a3-4093-9a21-58c9df66d7bb)
+*Customer looks through their bookings, searches for a specific provder and opens the chat feature, customer checks their bookings to see the progress of their order request in the top left corner of the card (Status changes from pending to Accepted to Complete.), once complete the customer gets a notification to rate the service.*
+
+---
 ## 🛠️ Technology Stack
 
 ### **Backend**
@@ -209,6 +230,7 @@ WorkConnect/
 - reviewcount (INT)
 - price (DECIMAL(10,2))
 - serviceImages (VARCHAR)
+- ProviderImages (VARCHAR)
 - ProviderId (INT, FK → h_users.Id)
 - IsActive (BOOLEAN)
 - created_at (DATETIME)
@@ -256,9 +278,13 @@ CREATE INDEX idx_bookings_customer_status ON bookings(CustomerId, Status);
 CREATE INDEX idx_messages_receiver ON messages(ReceiverId, IsRead);
 ```
 
+---
 
 
 
+
+
+---
 
 ## 🚀 Installation & Setup
 
@@ -309,8 +335,18 @@ dotnet run
 
 Navigate to: `https://localhost:5001`
 
-### **Test Accounts:**
-Use the Sign up
+### **Default Test Accounts:**
+```
+Provider:
+Email: provider@workconnect.com
+Password: Provider123!
+
+Customer:
+Email: customer@workconnect.com
+Password: Customer123!
+```
+
+---
 
 ## 🔌 API Endpoints
 
@@ -465,21 +501,28 @@ Use the Sign up
 
 ## 🔮 Future Enhancements
 
-### **Phase 1: Enhanced Features**
+### **Phase 1: Core Improvements**
+- [ ] Email verification system
+- [ ] Password reset functionality
+- [ ] Advanced search filters (availability, distance)
+- [ ] Service categories and tags
+- [ ] Provider profile pages with portfolio
+
+### **Phase 2: Enhanced Features**
 - [ ] Payment gateway integration (Stripe/PayPal)
 - [ ] Automated booking reminders (SMS/Email)
 - [ ] Calendar integration for providers
 - [ ] Multi-image upload for services
 - [ ] Provider verification badges
 
-### **Phase 32 Advanced Functionality**
+### **Phase 3: Advanced Functionality**
 - [ ] Real-time notifications (SignalR)
 - [ ] Video chat integration
 - [ ] AI-powered service recommendations
 - [ ] Mobile app (React Native/Flutter)
 - [ ] Advanced analytics with data export
 
-### **Phase 5: Enterprise Features**
+### **Phase 4: Enterprise Features**
 - [ ] Multi-language support (i18n)
 - [ ] Admin dashboard with metrics
 - [ ] Automated testing (Unit, Integration)
@@ -508,6 +551,12 @@ Contributions are welcome! Please follow these steps:
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
